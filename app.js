@@ -7,6 +7,7 @@ require('./routers/user')(app);
 require('./routers/auth')(app);
 require('./routers/food')(app);
 require('./routers/cart')(app);
+require('./routers/order')(app);
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
