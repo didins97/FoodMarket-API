@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "npx jest",
+    "test": "echo \"Error: no test specified\" && exit 1",
     "make:model": "npx sequelize-cli model:generate --name",
     "make:migration": "npx sequelize-cli migration:generate --name",
     "make:seeder": "npx sequelize-cli seed:generate --name",
