@@ -10,9 +10,11 @@
   "test": {
     "username": "root",
     "password": "root",
-    "database": "database_test",
+    "database": "foodMarket_test",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "port": 8889,
+    "dialect": "mysql",
+    "logging": false
   },
   "production": {
     "username": "root",
@@ -20,16 +22,5 @@
     "database": "database_production",
     "host": "127.0.0.1",
     "dialect": "mysql"
-  },
-  "docker": {
-    "username": "root",
-    "password": "root",
-    "database": "foodMarket",
-    "host": "mysql",
-    "port": 3306,
-    "dialect": "mysql"
-  },
-  "jwt": {
-    "secret": "fallback-secret"
   }
 }

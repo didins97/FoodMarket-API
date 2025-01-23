@@ -2,6 +2,9 @@
 const {
   Model
 } = require('sequelize');
+
+const bcrypt = require('bcryptjs');
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -48,10 +51,11 @@ module.exports = (sequelize, DataTypes) => {
           args: true,
           msg: 'Password is required'
         },
-        len: {
-          args: [6, 20],
-          msg: 'Password must be between 6 and 20 characters'
-        },
+        len(value) {
+          if (this.isNewRecord && (value.length < 6 || value.length > 20)) {
+            throw new Error('Password must be between 6 and 20 characters');
+          }
+        }
         // is: {
         //   args: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d@$!%*?&]{8,}$/,
         //   msg: "Password must contain at least 8 characters, one lowercase letter, one uppercase letter, and one number.",
@@ -88,8 +92,23 @@ module.exports = (sequelize, DataTypes) => {
           exclude: ['password']
         }
       }
+    },
+    hooks: {
+      beforeCreate: (user, options) => {
+        if (user.password) {
+          user.password = bcrypt.hashSync(user.password, 10);
+        }
+      },
+      beforeUpdate: (user, options) => {
+        if (user.changed('password')) {
+          const hashedPassword = bcrypt.hashSync(user.password, 10);
+          user.password = hashedPassword;
+        } else {
+          user.password = user._previousDataValues.password;
+        }
+      }
     }
   },
-);
+  );
   return User;
 };
