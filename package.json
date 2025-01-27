@@ -13,7 +13,7 @@
     "undo:migration:all": "npx sequelize-cli db:migrate:undo:all",
     "undo:seeder": "npx sequelize-cli db:seed:undo:all",
     "status:migration": "npx sequelize-cli db:migrate:status",
-    "start": "nodemon app.js"
+    "start": "nodemon src/app.js"
   },
   "keywords": [],
   "author": "",

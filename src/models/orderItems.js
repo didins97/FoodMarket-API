@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   OrderItem.init({
     order_id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: 'Orders',
@@ -50,7 +50,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM,
       allowNull: false,
       values: ['awaited', 'packed', 'shipped', 'received', 'canceled'],
-      defaultValue: 'pending'
+      defaultValue: 'awaited'
     },
     createdAt: {
       allowNull: false,

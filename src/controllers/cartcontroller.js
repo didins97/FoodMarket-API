@@ -1,15 +1,15 @@
 const db = require('../models');
-const response = require('../helpers/response');
+const { successResponse, errorResponse } = require('../helpers/response');
 
 const Cart = db.Cart;
 
 exports.getCarts = async (req, res) => {
     try {
         const carts = await Cart.findAll({ include: { all: true }, where: { user_id: req.userData.data.id } });
-        response.successResponse(res, 'success', 'Get all carts successfully', carts, 200);
+        return successResponse(res, 'success', 'Get all carts successfully', carts, 200);
     } catch (error) {
         console.error(error);
-        response.errorResponse(res, 'error', 'Failed to get carts', 500);
+        return errorResponse(res, 'error', 'Failed to get carts', error, 500);
     }
 }
 
@@ -18,17 +18,17 @@ exports.getCartById = async (req, res) => {
         const cart = await Cart.findByPk(req.params.id, { include: { all: true } });
 
         if (!cart) {
-            response.errorResponse(res, 'error', 'Cart not found', 404);
+            return errorResponse(res, 'error', 'Cart not found', 404);
         }
 
         if (cart.user_id !== req.userData.data.id) {
             return res.status(403).json({ error: 'Access denied' });
         }
 
-        response.successResponse(res, 'success', 'Get cart by id successfully', cart, 200);
+        return successResponse(res, 'success', 'Get cart by id successfully', cart, 200);
     } catch (error) {
         console.error(error);
-        response.errorResponse(res, 'error', 'Failed to get cart by id', 500);
+        return errorResponse(res, 'error', 'Failed to get cart by id', error, 500);
     }
 }
 
@@ -46,7 +46,7 @@ exports.createCart = async (req, res) => {
         )
 
         if (!cart) {
-            response.errorResponse(res, 'error', 'Cart not found', null, 404);
+            return errorResponse(res, 'error', 'Cart not found', null, 404);
         }
 
         if (cart) {
@@ -61,14 +61,10 @@ exports.createCart = async (req, res) => {
             await newCart.save();
         }
 
-        response.successResponse(res, 'success', 'Cart created successfully', cart, 201);
+        return successResponse(res, 'success', 'Cart created successfully', cart, 201);
     } catch (error) {
-        if (error.name === 'SequelizeValidationError') {
-            response.errorResponse(res, 'error', 'Validation error', error.errors, 400);
-        }
-        response.errorResponse(res, 'error', 'Failed to create cart', 500);
-
         console.log(error);
+        return errorResponse(res, 'error', 'Failed to create cart', error, 500);
     }
 }
 
@@ -77,7 +73,7 @@ exports.updateQtyCart = async (req, res) => {
         const cart = await Cart.findByPk(req.params.id);
         
         if (!cart) {
-            response.errorResponse(res, 'error', 'Cart not found', 404);
+            return errorResponse(res, 'error', 'Cart not found', 404);
         } 
 
         if (cart.user_id !== req.userData.data.id) {
@@ -87,12 +83,10 @@ exports.updateQtyCart = async (req, res) => {
         cart.quantity = req.body.quantity;
         await cart.save();
 
-        response.successResponse(res, 'success', 'Cart updated successfully', cart, 200);
+        return successResponse(res, 'success', 'Cart updated successfully', cart, 200);
     } catch (error) {
-        if (error.name === 'SequelizeValidationError') {
-            response.errorResponse(res, 'error', 'Validation error', error.errors, 400);
-        }
         console.error(error);
+        return errorResponse(res, 'error', 'Failed to create cart', error, 500);
     }
 }
 
@@ -101,16 +95,16 @@ exports.deleteCart = async (req, res) => {
         const cart = await Cart.findByPk(req.params.id);
 
         if (!cart) {
-            response.errorResponse(res, 'error', 'Cart not found', 404);
+            return errorResponse(res, 'error', 'Cart not found', 404);
         }
 
         if (cart.user_id !== req.userData.data.id) {
             return res.status(403).json({ error: 'Access denied' });
         }
         await cart.destroy();
-        response.successResponse(res, 'success', 'Cart deleted successfully', cart, 200);
+        return successResponse(res, 'success', 'Cart deleted successfully', cart, 200);
     } catch (error) {
         console.error(error);
-        response.errorResponse(res, 'error', 'Failed to delete cart', 500);
+        return errorResponse(res, 'error', 'Failed to delete cart', error, 500);
     }
 }
