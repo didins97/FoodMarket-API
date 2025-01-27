@@ -2,14 +2,15 @@ const router = require('express').Router();
 const foodController = require('../controllers/foodcontroller');
 const auth = require('../middlewares/auth');
 const role = require('../middlewares/role');
+const { validateFoodCreate, validateFoodUpdate } = require('../validators/foodValidator');
 
 module.exports = app => {
-    router.get('/foods', auth, foodController.getFoods);
-    router.get('/foods/:id', auth, foodController.getFoodById);
+    router.get('/', auth, foodController.getFoods);
+    router.get('/:id', auth, foodController.getFoodById);
 
-    router.post('/foods', [auth, role], foodController.createFood);
-    router.put('/foods/:id', [auth, role], foodController.updateFood);
-    router.delete('/foods/:id', [auth, role], foodController.deleteFood);
+    router.post('/', [auth, role], validateFoodCreate, foodController.createFood);
+    router.put('/:id', [auth, role], validateFoodUpdate, foodController.updateFood);
+    router.delete('/:id', [auth, role], foodController.deleteFood);
 
-    app.use('/', router);    
+    app.use('/api/foods', router);    
 }

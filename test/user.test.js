@@ -55,7 +55,7 @@ describe('User Controller', () => {
             expect(response.status).toBe(200);
             expect(response.body).toHaveProperty('meta');
             expect(response.body).toHaveProperty('data');
-            
+
             expect(Array.isArray(response.body.data)).toBe(true);
 
             expect(response.body.meta.status).toBe('success');
@@ -111,7 +111,7 @@ describe('User Controller', () => {
 
     describe('POST /api/users', () => {
         const validatedUserData = {
-            name : "Cristiano Ronaldo",
+            name: "Cristiano Ronaldo",
             email: "cristiano@example.com",
             password: "password",
             role: "user"
@@ -129,48 +129,48 @@ describe('User Controller', () => {
             expect(response.body.message).toBe('Access denied');
         })
 
-        it('should validate password length', async() => {
+        it('should validate password length', async () => {
             const response = await request(app)
                 .post('/api/users')
                 .set('Authorization', `Bearer ${tokenAdmin}`)
                 .set('Accept', 'application/json')
-                .send({...validatedUserData, password: "pass"});
+                .send({ ...validatedUserData, password: "pass" });
 
             expect(response.status).toBe(400);
             expect(response.body.meta.message).toBe("Validation error");
             expect(response.body.error[0].msg).toBe('Password must be at least 6 characters long')
         });
 
-        it('should validate required name', async() => {
+        it('should validate required name', async () => {
             const response = await request(app)
                 .post('/api/users')
                 .set('Authorization', `Bearer ${tokenAdmin}`)
                 .set('Accept', 'application/json')
-                .send({...validatedUserData, name: ""});
+                .send({ ...validatedUserData, name: "" });
 
             expect(response.status).toBe(400);
             expect(response.body.meta.message).toBe("Validation error");
             expect(response.body.error[0].msg).toBe('Name is required')
         });
 
-        it('should validate invalid email', async() => {
+        it('should validate invalid email', async () => {
             const response = await request(app)
                 .post('/api/users')
                 .set('Authorization', `Bearer ${tokenAdmin}`)
                 .set('Accept', 'application/json')
-                .send({...validatedUserData, email: "cristiano"});
+                .send({ ...validatedUserData, email: "cristiano" });
 
             expect(response.status).toBe(400);
             expect(response.body.meta.message).toBe("Validation error");
             expect(response.body.error[0].msg).toBe('Email is invalid')
         });
 
-        it('should validate invalid role', async() => {
+        it('should validate invalid role', async () => {
             const response = await request(app)
                 .post('/api/users')
                 .set('Authorization', `Bearer ${tokenAdmin}`)
                 .set('Accept', 'application/json')
-                .send({...validatedUserData, role: "operator"});
+                .send({ ...validatedUserData, role: "operator" });
 
             expect(response.status).toBe(400);
             expect(response.body.meta.message).toBe("Validation error");
