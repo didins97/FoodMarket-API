@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = 'secret-key';
 
 const generateToken = (user) => {
-    return jwt.sign({ exp: Math.floor(Date.now() / 1000) + 60 * 60, data: user }, SECRET_KEY);
+    return  jwt.sign({ exp: Math.floor(Date.now() / 1000) + 60 * 60, id: user.id, role: user.role }, SECRET_KEY);
 };
 
 const createDummyCategory = async (name) => {

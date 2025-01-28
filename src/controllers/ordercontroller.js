@@ -1,6 +1,7 @@
 const { response } = require('express');
 const { successResponse, errorResponse } = require('../helpers/response');
 const db = require('../models');
+const { createOrderService } = require('../services/orderService');
 
 const Order = db.Order
 const Food = db.Food
@@ -9,7 +10,14 @@ const sequelize = db.sequelize
 
 exports.getOrders = async (req, res) => {
     try {
-        const orders = await Order.findAll({ include: { all: true } });
+        let orders;
+
+        if (req.userData.role === 'admin') {
+            orders = await Order.scope('admin').findAll();
+        } else {
+            orders = await Order.scope({method: ['userOrders', req.userData.id]}).findAll()
+        }
+
         return successResponse(res, 'success', 'Get all orders successfuly', orders, 200);
     } catch (error) {
         console.log(error);
@@ -19,9 +27,17 @@ exports.getOrders = async (req, res) => {
 
 exports.getOrderById = async (req, res) => {
     try {
-        const order = await Order.findByPk(req.params.id, { include: { all: true } });
+        // const order = await Order.findByPk(req.params.id, { include: { all: true } });
+        let order;
+
+        if (req.userData.role === 'admin') {
+            order = await Order.scope('admin').findByPk(req.params.id)
+        } else {
+            order = await Order.scope({method: ['userOrders', req.userData.id]}).findByPk(req.params.id)
+        }
+
         if (!order) {
-            return errorResponse(res, 'error', 'Order not found', null, 404)
+            return errorResponse(res, 'error', 'Order not found', null, 404);
         }
 
         return successResponse(res, 'success', 'Get order successfuly', order, 200);
@@ -32,7 +48,8 @@ exports.getOrderById = async (req, res) => {
 }
 
 exports.createOrder = async (req, res) => {
-    const { user_id, address, payment_method, order_data } = req.body;
+    const { address, payment_method, order_data } = req.body;
+    const user_id = req.userData.id;
 
     const t = await sequelize.transaction();
 

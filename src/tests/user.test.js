@@ -6,13 +6,9 @@ const jwt = require('jsonwebtoken');
 
 const SECRET_KEY = 'secret-key';
 
-const generateToken = (user) => {
-    return jwt.sign({ exp: Math.floor(Date.now() / 1000) + 60 * 60, data: user }, SECRET_KEY);
-};
+const generateToken = (user) => jwt.sign({ exp: Math.floor(Date.now() / 1000) + 60 * 60, id: user.id, role: user.role }, SECRET_KEY);
 
-const createDummyUser = async (name, email, password, role) => {
-    return await db.User.create({ name, email, password, role });
-};
+const createDummyUser = async (name, email, password, role) => db.User.create({ name, email, password, role });
 
 
 describe('User Controller', () => {

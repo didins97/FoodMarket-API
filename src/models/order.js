@@ -95,6 +95,17 @@ module.exports = (sequelize, DataTypes) => {
             }
           );
         }
+      },
+      scopes: {
+        admin: {
+          include: { all: true }
+        },
+        userOrders: (userId) => {
+          return {
+            where: { user_id: userId },
+            include: { all: true }
+          }
+        }
       }
     }
   );

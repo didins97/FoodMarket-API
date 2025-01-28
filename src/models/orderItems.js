@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class OrderItem extends Model {
     /**
@@ -66,7 +67,7 @@ module.exports = (sequelize, DataTypes) => {
     modelName: 'OrderItem',
     tableName: 'OrderItems',
     // paranoid: true,
-  }
+  },
 );
   return OrderItem;
 };

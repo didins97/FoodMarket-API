@@ -51,10 +51,9 @@ module.exports = (sequelize, DataTypes) => {
           args: true,
           msg: 'Password is required'
         },
-        len(value) {
-          if (this.isNewRecord && (value.length < 6 || value.length > 20)) {
-            throw new Error('Password must be between 6 and 20 characters');
-          }
+        len: {
+          args: [6],
+          msg: 'Password must be at least 6 characters long'
         }
         // is: {
         //   args: /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\d@$!%*?&]{8,}$/,

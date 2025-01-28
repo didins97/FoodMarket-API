@@ -19,7 +19,8 @@ exports.register = async (req, res) => {
         // hash token
         const token = jwt.sign({
             exp: Math.floor(Date.now() / 1000) + (60 * 60),
-            data: user,
+            id: user.id,
+            role: user.role
         }, 'secret-key');
 
         response.successResponse(res, 'success', 'User registered successfully', user, 201, token);
@@ -48,7 +49,8 @@ exports.login = async (req, res) => {
         // hash token
         const token = jwt.sign({
             exp: Math.floor(Date.now() / 1000) + (60 * 60),
-            data: user
+            id: user.id,
+            role: user.role
         }, 'secret-key');
 
         response.successResponse(res, 'success', 'User logged in successfully', user, 200, token);
